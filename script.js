@@ -59,6 +59,6 @@
   }
   document.querySelectorAll('.inline-media[data-project]').forEach(slot => {
     const id = slot.dataset.project;
-    mountVideo(slot, id === 'showreel' ? config.showreelUrl : config.projects?.[id]?.videoUrl);
+    mountVideo(slot, config.projects?.[id]?.videoUrl);
   });
 })();

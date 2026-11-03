@@ -4,11 +4,12 @@ window.PORTFOLIO = {
   name: '최다은',
   email: 'cheh311@gmail.com',
   profileUrl: '',
-  showreelUrl: '',
   projects: {
     reverse: { videoUrl: '' },
     elder: { videoUrl: '' },
     silk: { videoUrl: 'https://youtu.be/rSVrRmWaiFg' },
-    monsters: { videoUrl: '' }
+    'dnf-skills': { videoUrl: '' },
+    'dnf-monsters': { videoUrl: '' },
+    'dnf-ui': { videoUrl: '' }
   }
 };
