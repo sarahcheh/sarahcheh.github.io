@@ -61,4 +61,57 @@
     const id = slot.dataset.project;
     mountVideo(slot, config.projects?.[id]?.videoUrl);
   });
+  const toc = document.querySelector('.project-toc');
+  const dock = document.getElementById('sticky-projects');
+  const toggle = document.getElementById('project-menu-toggle');
+  const menu = document.getElementById('project-menu');
+  const current = document.getElementById('project-menu-current');
+  const action = document.getElementById('project-menu-action');
+  const projects = [...document.querySelectorAll('article.project[id]')];
+  function setMenuOpen(open) {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? '작품 목록 접기' : '작품 목록 펼치기');
+    action.textContent = open ? '접기' : '펼치기';
+    menu.hidden = !open;
+  }
+  projects.forEach(project => {
+    const item = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = `#${project.id}`;
+    const index = document.createElement('span'); index.className = 'toc-index'; index.textContent = project.querySelector('.project-index').textContent;
+    const text = document.createElement('span'); text.textContent = project.querySelector('.project-title').textContent;
+    const scope = document.createElement('small'); scope.textContent = project.querySelector(':scope > p:not(.eyebrow)').textContent;
+    text.append(scope); link.append(index, text); item.append(link); menu.querySelector('ol').append(item);
+    link.addEventListener('click', () => { setMenuOpen(false); project.focus({preventScroll:true}); });
+  });
+  toggle.addEventListener('click', () => setMenuOpen(menu.hidden));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !menu.hidden) { setMenuOpen(false); toggle.focus({preventScroll:true}); }
+  });
+  document.addEventListener('click', event => {
+    if (!menu.hidden && !dock.contains(event.target)) setMenuOpen(false);
+  });
+  let scheduled = false;
+  function updateNavigation() {
+    scheduled = false;
+    const visible = toc.getBoundingClientRect().bottom <= 0;
+    dock.hidden = !visible;
+    if (!visible) setMenuOpen(false);
+    let active = projects[0];
+    for (const project of projects) {
+      if (project.getBoundingClientRect().top <= 130) active = project;
+    }
+    current.textContent = `${active.querySelector('.project-title').textContent} · ${active.querySelector(':scope > p:not(.eyebrow)').textContent}`;
+    menu.querySelectorAll('a').forEach(link => {
+      if (link.hash === `#${active.id}`) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function scheduleNavigation() {
+    if (!scheduled) { scheduled = true; requestAnimationFrame(updateNavigation); }
+  }
+  window.addEventListener('scroll', scheduleNavigation, {passive:true});
+  window.addEventListener('resize', scheduleNavigation);
+  window.addEventListener('pageshow', scheduleNavigation);
+  updateNavigation();
 })();
