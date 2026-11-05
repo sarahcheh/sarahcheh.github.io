@@ -61,7 +61,7 @@
     const id = slot.dataset.project;
     mountVideo(slot, config.projects?.[id]?.videoUrl);
   });
-  const toc = document.querySelector('.project-toc');
+  const projectGrid = document.querySelector('.project-grid');
   const dock = document.getElementById('sticky-projects');
   const toggle = document.getElementById('project-menu-toggle');
   const menu = document.getElementById('project-menu');
@@ -94,7 +94,7 @@
   let scheduled = false;
   function updateNavigation() {
     scheduled = false;
-    const visible = toc.getBoundingClientRect().bottom <= 0;
+    const visible = projectGrid.getBoundingClientRect().top <= 78;
     dock.hidden = !visible;
     if (!visible) setMenuOpen(false);
     let active = projects[0];
