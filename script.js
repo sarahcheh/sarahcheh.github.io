@@ -9,15 +9,6 @@
     try { const u = new URL(value); return ['https:', 'http:'].includes(u.protocol) ? u : null; }
     catch { return null; }
   };
-  if (typeof config.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.email)) {
-    const email = document.getElementById('email-link');
-    email.textContent = config.email;
-    email.href = `mailto:${encodeURIComponent(config.email)}`;
-    email.hidden = false;
-    document.getElementById('contact-placeholder').hidden = true;
-  }
-  const profile = safeUrl(config.profileUrl);
-  if (profile) { const el = document.getElementById('profile-link'); el.href = profile.href; el.hidden = false; }
   function mountVideo(slot, raw) {
     const url = safeUrl(raw);
     if (!url) return;
