@@ -1,5 +1,5 @@
 window.PORTFOLIO_DEFAULT_SETTINGS = {
-  "version": 1,
+  "version": 2,
   "order": [
     "silk",
     "elder",
@@ -18,5 +18,57 @@ window.PORTFOLIO_DEFAULT_SETTINGS = {
       "heading": "Turning Creative Vision into Player Experience.",
       "body": "I interpret the intent behind game design and direction, express it through sound, and invite players into the game world."
     }
-  }
+  },
+  "tools": {
+    "daw": [
+      "Cubase",
+      "Logic Pro"
+    ],
+    "middleware": [
+      "FMOD",
+      "Wwise"
+    ],
+    "engines": [
+      "Unity",
+      "Unreal Engine"
+    ]
+  },
+  "experience": [
+    {
+      "ko": {
+        "title": "음악극 <카세트 플레이어>",
+        "role": "총감독"
+      },
+      "en": {
+        "title": "Musical Theatre <Cassette Player>",
+        "role": "Production Director"
+      },
+      "start": "2022-10",
+      "end": "2022-10"
+    },
+    {
+      "ko": {
+        "title": "연극 <THE CELL [대학로]>",
+        "role": "조연출"
+      },
+      "en": {
+        "title": "Play <THE CELL [Daehangno]>",
+        "role": "Assistant Director"
+      },
+      "start": "2024-08",
+      "end": "2024-08"
+    },
+    {
+      "ko": {
+        "title": "GMTK Game Jam 2026",
+        "role": "사운드 디자이너"
+      },
+      "en": {
+        "title": "GMTK Game Jam 2026",
+        "role": "Sound Designer"
+      },
+      "start": "2026-07",
+      "end": "2026-07"
+    }
+  ]
 };

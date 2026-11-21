@@ -11,19 +11,68 @@
   const toggle = document.getElementById('project-menu-toggle');
   const menu = document.getElementById('project-menu');
   let settings = structuredClone(defaults);
-  let language = 'ko';
+  let language = 'en';
   let order = [];
   let scheduled = false;
 
   function validSettings(value) {
-    if (!value || value.version !== 1 || !Array.isArray(value.order)) return false;
+    if (!value || value.version !== 2 || !Array.isArray(value.order)) return false;
     if (value.order.length !== ids.length || new Set(value.order).size !== ids.length ||
         !value.order.every(id => ids.includes(id))) return false;
-    return ['ko', 'en'].every(lang => {
-      const about = value.about?.[lang];
-      return about && ['heading', 'body'].every(key =>
-        typeof about[key] === 'string' && about[key].trim().length > 0 &&
-        about[key].length <= 1000);
+    const text = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
+    if (!['daw', 'middleware', 'engines'].every(key => Array.isArray(value.tools?.[key]) &&
+      value.tools[key].length <= 30 && value.tools[key].every(v => text(v, 100)))) return false;
+    const month = v => typeof v === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(v);
+    return Array.isArray(value.experience) && value.experience.length <= 50 && value.experience.every(item =>
+      item && ['ko', 'en'].every(lang => text(item[lang]?.title, 200) && text(item[lang]?.role, 120)) &&
+      month(item.start) && (item.end === '' || (month(item.end) && item.end >= item.start)));
+  }
+  function normalizeSettings(value) {
+    if (value?.version === 1) value = { ...structuredClone(defaults), order: value.order };
+    if (!validSettings(value)) throw new Error('저장된 사이트 설정을 읽지 못했습니다.');
+    return { ...structuredClone(value), about: structuredClone(defaults.about) };
+  }
+  function formatMonth(value) {
+    const [year, month] = value.split('-').map(Number);
+    return language === 'ko' ? `${year}년 ${month}월` :
+      new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month - 1, 1)));
+  }
+  function renderProfile() {
+    const copy = locales[language];
+    ['daw', 'middleware', 'engines'].forEach((key, index) => {
+      const target = document.querySelectorAll('.profile-tools dd')[index];
+      target.replaceChildren();
+      settings.tools[key].forEach((name, i) => {
+        if (i) target.append(document.createElement('br'));
+        const item = document.createElement('span');
+        item.textContent = name;
+        if (key === 'middleware' && name.toLowerCase() === 'wwise') {
+          item.className = 'wwise-credential';
+          const note = document.createElement('span');
+          note.className = 'certification-note';
+          note.textContent = copy.wwiseNote;
+          item.append(document.createTextNode(' '), note);
+        }
+        target.append(item);
+      });
+    });
+    const target = document.querySelector('.profile-projects');
+    const heading = document.createElement('h3');
+    heading.textContent = copy.participationLabel;
+    target.replaceChildren(heading);
+    settings.experience.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'education-item';
+      const title = document.createElement('h4');
+      title.textContent = item[language].title;
+      const role = document.createElement('p');
+      role.textContent = (language === 'ko' ? '역할: ' : 'Role: ') + item[language].role;
+      const date = document.createElement('p');
+      date.className = 'education-date';
+      date.textContent = formatMonth(item.start) + (item.end === item.start ? '' :
+        ' – ' + (item.end ? formatMonth(item.end) : (language === 'ko' ? '현재' : 'Present')));
+      row.append(title, role, date);
+      target.append(row);
     });
   }
 
@@ -124,7 +173,7 @@
       });
     });
     const slogan = document.getElementById('about-title');
-    const sloganText = settings.about[language].heading;
+    const sloganText = defaults.about[language].heading;
     slogan.textContent = sloganText;
     if (language === 'en' && /^Turning Creative Vision into Player Experience\.$/.test(sloganText.trim())) {
       slogan.replaceChildren();
@@ -136,7 +185,8 @@
         slogan.append(group);
       }
     }
-    document.querySelector('.about-body > p').textContent = settings.about[language].body;
+    document.querySelector('.about-body > p').textContent = defaults.about[language].body;
+    renderProfile();
     document.querySelector('meta[name="description"]').content =
       copy.hero + '. ' + copy.heroSummary;
     setMenuOpen(!menu.hidden);
@@ -146,7 +196,6 @@
   function setLanguage(lang) {
     if (!locales[lang]) return;
     language = lang;
-    try { localStorage.setItem('portfolio-language', lang); } catch {}
     const url = new URL(location.href);
     url.searchParams.set('lang', lang);
     history.replaceState(null, '', url);
@@ -195,10 +244,6 @@
   }
   const requestedLanguage = new URL(location.href).searchParams.get('lang');
   if (locales[requestedLanguage]) language = requestedLanguage;
-  else {
-    try { if (locales[localStorage.getItem('portfolio-language')])
-      language = localStorage.getItem('portfolio-language'); } catch {}
-  }
   document.getElementById('year').textContent = new Date().getFullYear();
   document.querySelectorAll('[data-language]').forEach(button => {
     button.addEventListener('click', () => setLanguage(button.dataset.language));
@@ -222,16 +267,16 @@
     try {
       const response = await fetch('site-settings.json', { cache: 'no-store' });
       const remote = await response.json();
-      if (validSettings(remote)) { settings = remote; render(); }
+      settings = normalizeSettings(remote); render();
     } catch { /* Embedded defaults keep the page usable offline. */ }
   })();
   window.portfolioSite = Object.freeze({
-    ready, validSettings,
+    ready, validSettings, normalizeSettings,
     getSettings: () => structuredClone(settings),
     getProject: id => locales.ko.projects[id],
     preview(value) {
       if (!validSettings(value)) throw new Error('Invalid portfolio settings');
-      settings = structuredClone(value);
+      settings = normalizeSettings(value);
       render();
     }
   });

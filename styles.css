@@ -149,3 +149,7 @@ html{scroll-padding-top:calc(var(--header-height) + 76px)}
 
 .slogan-phrase{display:inline-block;white-space:nowrap}
 @media(max-width:360px){html[lang=en] .about-body .about-lead{font-size:24px}}
+
+.admin-section{border-top:1px solid var(--line);margin-top:28px;padding-top:24px}.admin-section>h3{font-size:18px;margin:0 0 12px}.admin-tool-group{margin:22px 0}.admin-tool-group h4,.admin-experience-item h4{font-size:15px;margin:0 0 10px}.admin-tool-row{display:flex;gap:12px;align-items:flex-end;margin-bottom:12px}.admin-tool-row label{flex:1;margin:0}.admin-tool-row>button{margin-bottom:3px}.admin-experience-item{padding:20px;border:1px solid var(--line);border-radius:6px;margin-bottom:18px}.admin-experience-item .admin-buttons{margin:18px 0 0}.admin-dialog label input{display:block;margin-top:7px}#admin-tools{display:grid;grid-template-columns:1fr;gap:0}
+
+.admin-tool-row label{min-width:0}

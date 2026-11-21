@@ -115,13 +115,100 @@
       list.append(row);
     });
   }
-  function readDraft() {
-    for (const lang of ['ko', 'en']) {
-      for (const key of ['heading', 'body']) {
-        draft.about[lang][key] = document.getElementById('about-' + key + '-' + lang).value.trim();
-      }
+  function button(text, action) {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.textContent = text;
+    el.addEventListener('click', action);
+    return el;
+  }
+  function field(labelText, value, change, type = 'text', max = 200) {
+    const label = document.createElement('label');
+    label.textContent = labelText;
+    const input = document.createElement('input');
+    input.type = type;
+    input.value = value;
+    input.maxLength = max;
+    input.required = !labelText.includes('선택');
+    input.addEventListener('input', () => change(input.value.trim()));
+    label.append(input);
+    return label;
+  }
+  function renderTools() {
+    const root = document.getElementById('admin-tools');
+    root.replaceChildren();
+    for (const [key, title] of [['daw', 'DAW'], ['middleware', '오디오 미들웨어'], ['engines', '게임 엔진']]) {
+      const group = document.createElement('section');
+      group.className = 'admin-tool-group';
+      const heading = document.createElement('h4');
+      heading.textContent = title;
+      group.append(heading);
+      draft.tools[key].forEach((name, index) => {
+        const row = document.createElement('div');
+        row.className = 'admin-tool-row';
+        const input = field(title + ' 프로그램명 ' + (index + 1), name, value => { draft.tools[key][index] = value; }, 'text', 100);
+        row.append(input, button('삭제', () => { draft.tools[key].splice(index, 1); renderTools(); }));
+        group.append(row);
+      });
+      group.append(button(title + ' 추가', () => {
+        if (draft.tools[key].length >= 30) return;
+        draft.tools[key].push('');
+        renderTools();
+        document.querySelectorAll('#admin-tools .admin-tool-group')[['daw', 'middleware', 'engines'].indexOf(key)].querySelectorAll('input').item(draft.tools[key].length - 1)?.focus();
+      }));
+      root.append(group);
     }
-    if (!site.validSettings(draft)) throw new Error('소개글의 빈 칸과 길이를 확인해 주세요.');
+  }
+  function renderExperience() {
+    const root = document.getElementById('admin-experience');
+    root.replaceChildren();
+    draft.experience.forEach((item, index) => {
+      const row = document.createElement('section');
+      row.className = 'admin-experience-item';
+      const heading = document.createElement('h4');
+      heading.textContent = '프로젝트 ' + (index + 1);
+      row.append(heading);
+      const languages = document.createElement('div');
+      languages.className = 'admin-about';
+      for (const [lang, name] of [['ko', '한국어'], ['en', 'English']]) {
+        const column = document.createElement('div');
+        column.append(field(name + ' 프로젝트명', item[lang].title, value => { item[lang].title = value; }),
+          field(name + ' 역할', item[lang].role, value => { item[lang].role = value; }, 'text', 120));
+        languages.append(column);
+      }
+      const dates = document.createElement('div');
+      dates.className = 'admin-about';
+      dates.append(field('시작월', item.start, value => { item.start = value; }, 'month'),
+        field('종료월 (선택)', item.end, value => { item.end = value; }, 'month'));
+      const controls = document.createElement('div');
+      controls.className = 'admin-buttons';
+      for (const [title, offset] of [['위로', -1], ['아래로', 1]]) {
+        const control = button(title, () => {
+          const to = index + offset;
+          if (to < 0 || to >= draft.experience.length) return;
+          const [value] = draft.experience.splice(index, 1);
+          draft.experience.splice(to, 0, value);
+          renderExperience();
+        });
+        control.disabled = index + offset < 0 || index + offset >= draft.experience.length;
+        controls.append(control);
+      }
+      controls.append(button('프로젝트 삭제', () => { draft.experience.splice(index, 1); renderExperience(); }));
+      row.append(languages, dates, controls);
+      root.append(row);
+    });
+  }
+  document.getElementById('admin-add-experience').addEventListener('click', () => {
+    if (draft.experience.length >= 50) return;
+    draft.experience.push({ ko: { title: '', role: '' }, en: { title: '', role: '' }, start: '', end: '' });
+    renderExperience();
+    document.querySelector('#admin-experience section:last-child input')?.focus();
+  });
+  editor.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && event.target.tagName === 'INPUT') event.preventDefault();
+  });
+  function readDraft() {
+    if (!site.validSettings(draft)) throw new Error('프로그램명, 한국어·영어 프로젝트명과 역할, 기간을 확인해 주세요. 종료월은 시작월 이후여야 합니다.');
     return structuredClone(draft);
   }
   async function openAdmin() {
@@ -150,18 +237,17 @@
       if (user.login.toLowerCase() !== 'sarahcheh')
         throw new Error('인증 정보를 확인해 주세요.');
       const remote = await github(fileEndpoint + '?ref=main');
-      const settings = JSON.parse(decodeContent(remote.content));
+      const settings = site.normalizeSettings(JSON.parse(decodeContent(remote.content)));
       if (!site.validSettings(settings)) throw new Error('저장된 사이트 설정을 읽지 못했습니다.');
       expectedSha = remote.sha;
       baseline = structuredClone(settings);
       draft = structuredClone(settings);
-      for (const lang of ['ko', 'en']) for (const key of ['heading', 'body']) {
-        document.getElementById('about-' + key + '-' + lang).value = draft.about[lang][key];
-      }
       renderOrder();
+      renderTools();
+      renderExperience();
       login.hidden = true;
       editor.hidden = false;
-      tell('인증되었습니다. 순서와 소개글을 수정할 수 있습니다.');
+      tell('인증되었습니다. 작품 순서, 사용 도구, 프로젝트 이력을 수정할 수 있습니다.');
       const expire = () => {
         if (busy) { sessionTimer = setTimeout(expire, 1000); return; }
         lock('인증 시간이 만료되었습니다. 다시 인증해 주세요.');
@@ -193,7 +279,7 @@
       const result = await github(fileEndpoint, {
         method: 'PUT',
         body: JSON.stringify({
-          message: 'Update portfolio order and introduction',
+          message: 'Update portfolio order, tools and project experience',
           branch: 'main', sha: expectedSha,
           content: encodeContent(JSON.stringify(value, null, 2) + '\n')
         })
