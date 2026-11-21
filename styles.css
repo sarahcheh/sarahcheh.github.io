@@ -93,24 +93,45 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 @media(min-width:601px){.profile-tools{grid-template-columns:minmax(0,1fr) minmax(280px,1.7fr) minmax(0,1fr);gap:32px}}
 @media(max-width:600px){.about{padding-block:40px}.profile{padding-top:32px}}
 
-/* Keep both navigation levels aligned with the page content. */
-:root{--header-height:96px;--slogan-accent:#6542ef}
+/* Two compact, independently fixed navigation levels. */
+:root{--header-height:64px;--slogan-accent:#715ab7}
 html{scroll-padding-top:calc(var(--header-height) + 76px)}
-.header{position:sticky;top:0;z-index:30;width:100%;margin:0;padding-inline:max(48px,calc((100% - 1120px)/2));background:#fff;height:var(--header-height)}
+.header{position:sticky;top:0;z-index:30;width:100%;margin:0;padding-inline:max(48px,calc((100% - 1120px)/2));background:#fff;height:var(--header-height);flex-wrap:nowrap;gap:24px}
+.brand,.header-actions,.header nav,.language-switch{flex-shrink:0;white-space:nowrap}
+.brand-icon{height:22px;gap:2.5px}
+.brand-icon i{width:2.5px;height:8px}
+.brand-icon i:nth-child(2),.brand-icon i:nth-child(4){height:15px}
+.brand-icon i:nth-child(3){height:22px}
+.brand [data-copy="brandLabel"],html[lang=en] .brand [data-copy="brandLabel"]{max-width:none}
 .sticky-projects{top:var(--header-height)}
 .project-menu{max-height:min(calc(100dvh - var(--header-height) - 72px),480px)}
-.about{background:var(--slogan-accent)}
+.about{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#63518f 0%,var(--slogan-accent) 50%,#64578f 100%)}
+.about::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle,#e7dfff55 1px,transparent 1.2px);background-size:5px 5px;mask-image:linear-gradient(110deg,#000b,transparent 43%,transparent 58%,#000);-webkit-mask-image:linear-gradient(110deg,#000b,transparent 43%,transparent 58%,#000)}
 .about-body>p{color:#fff}
 .skip{z-index:40}
-@media(max-width:800px){.header{padding-inline:28px}}
+@media(max-width:800px){.header{padding-inline:28px;gap:16px}.header-actions{gap:22px}.header nav{gap:22px}}
 @media(max-width:600px){
- :root{--header-height:102px}
- .header{padding:12px 20px 8px;display:grid;grid-template-columns:1fr auto;row-gap:4px;align-content:center}
- .header-actions{display:contents}
- .header .language-switch{grid-column:2;grid-row:1}
- .header nav{grid-column:1/-1;grid-row:2;gap:24px}
- .header nav a{padding:6px 0}
- .brand [data-copy="brandLabel"]{max-width:none;font-size:12px}
- html[lang=en] .brand [data-copy="brandLabel"]{max-width:135px}
+ :root{--header-height:60px}
+ .header{padding:0 14px;display:flex;gap:12px}
+ .brand{font-size:12px;gap:7px}
+ .header-actions{display:flex;gap:13px}
+ .header nav{gap:13px}
+ .header nav a,.language-switch{font-size:11px}
+ .header nav a{padding:10px 0}
+ .language-switch{gap:5px}
+ .brand [data-copy="brandLabel"]{font-size:12px}
+}
+@media(max-width:420px){
+ .header{padding-inline:10px;gap:8px}
+ .brand{gap:5px}
+ .brand [data-copy="brandLabel"]{font-size:10px}
+ .brand-icon{gap:2px;height:18px}
+ .brand-icon i{width:2px;height:7px}
+ .brand-icon i:nth-child(2),.brand-icon i:nth-child(4){height:12px}
+ .brand-icon i:nth-child(3){height:18px}
+ .header-actions{gap:9px}
+ .header nav{gap:10px}
+ .header nav a,.language-switch{font-size:10px}
+ .language-switch{gap:4px}
 }
 @media print{.header{display:none}}
