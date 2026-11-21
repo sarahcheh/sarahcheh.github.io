@@ -146,3 +146,6 @@ html{scroll-padding-top:calc(var(--header-height) + 76px)}
 .profile-discord>span:first-child{font-size:14px;color:var(--muted)}
 .discord-username{font-size:20px;user-select:all}
 @media(max-width:600px){.profile-projects{padding:26px 0}.profile-contact{padding-top:26px}.collaboration-note{font-size:15px;margin-bottom:22px}.profile-discord{flex-direction:column;gap:10px}.discord-username{font-size:19px}}
+
+.slogan-phrase{display:inline-block;white-space:nowrap}
+@media(max-width:360px){html[lang=en] .about-body .about-lead{font-size:24px}}

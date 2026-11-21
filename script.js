@@ -123,7 +123,19 @@
         card.focus({ preventScroll: true });
       });
     });
-    document.getElementById('about-title').textContent = settings.about[language].heading;
+    const slogan = document.getElementById('about-title');
+    const sloganText = settings.about[language].heading;
+    slogan.textContent = sloganText;
+    if (language === 'en' && /^Turning Creative Vision into Player Experience\.$/.test(sloganText.trim())) {
+      slogan.replaceChildren();
+      for (const [index, phrase] of ['Turning Creative Vision', 'into Player Experience.'].entries()) {
+        if (index) slogan.append(document.createTextNode(' '));
+        const group = document.createElement('span');
+        group.className = 'slogan-phrase';
+        group.textContent = phrase;
+        slogan.append(group);
+      }
+    }
     document.querySelector('.about-body > p').textContent = settings.about[language].body;
     document.querySelector('meta[name="description"]').content =
       copy.hero + '. ' + copy.heroSummary;
