@@ -225,55 +225,47 @@
   });
 })();
 
-// Opaque pixel colors form the gradient, with a uniform center behind the text.
+// Draw five-color pixel cloud shapes, with a quiet bright opening behind the text.
 (() => {
   const canvas = document.querySelector('.pixel-background');
   const section = canvas?.parentElement;
   if (!canvas || !section) return;
   const context = canvas.getContext('2d');
   if (!context) return;
+  const palette = ['#7963be', '#62509c', '#4d407f', '#3c3265', '#2c264c'];
+  const leftContour = [.43, .38, .35, .29, .31, .27, .3, .32, .36, .4, .45];
+  const rightContour = [.62, .67, .65, .71, .69, .74, .7, .73, .68, .66, .6];
+  const offsets = [0, .075, .17, .29];
+  function sample(points, position) {
+    const index = Math.min(points.length - 2, Math.floor(position));
+    const fraction = position - index;
+    return points[index] + (points[index + 1] - points[index]) * fraction;
+  }
   function paint() {
     const width = Math.ceil(section.clientWidth / 4);
     const height = Math.ceil(section.clientHeight / 4);
     canvas.width = width;
     canvas.height = height;
-    const center = [121, 99, 190];
-    const outside = [44, 34, 76];
-    const palette = Array.from({ length: 25 }, (_, index) => {
-      const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 24));
-      return `rgb(${color.join(',')})`;
-    });
-    const previousInner = Math.min(width * .14, height * .35);
-    const previousOuter = Math.max(width * .38, height * .7);
-    const span = previousOuter - previousInner;
-    // Extend color 1 through the former color 2 band, then skip color 2.
-    const innerRadius = previousInner + span / 6;
-    const bandWidth = span * .2;
-    const boundaries = [innerRadius];
-    for (const multiplier of [1, 1.25, 1.5, 1.75]) {
-      boundaries.push(boundaries[boundaries.length - 1] + bandWidth * multiplier);
-    }
-    const colorSteps = [0, 2, 3, 4, 5, 6];
-    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-      const distance = Math.hypot(x + .5 - width / 2, y + .5 - height / 2);
-      // Blend around unchanged band boundaries using solid intermediate pixel colors.
-      let hash = Math.imul(x + 1, 374761393) ^ Math.imul(y + 1, 668265263);
-      hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
-      const threshold = ((hash ^ (hash >>> 16)) >>> 0) / 4294967296;
-      const halfBlend = bandWidth * .4;
-      const band = boundaries.findIndex(radius => distance < radius);
-      let level = colorSteps[band < 0 ? colorSteps.length - 1 : band];
-      for (let i = 0; i < boundaries.length; i++) {
-        const offset = distance - boundaries[i];
-        if (Math.abs(offset) > halfBlend) continue;
-        const t = (offset + halfBlend) / (halfBlend * 2);
-        const blend = t * t * (3 - 2 * t);
-        level = colorSteps[i] + (colorSteps[i + 1] - colorSteps[i]) * blend;
-        break;
+    for (let y = 0; y < height; y++) {
+      const row = Math.floor(y / 2) * 2;
+      const position = row / Math.max(1, height - 1) * 10;
+      for (let x = 0; x < width; x++) {
+        let color = 4;
+        for (let layer = 0; layer < offsets.length; layer++) {
+          // Quantized contours make deliberate steps and broad, solid color masses.
+          const left = Math.round((sample(leftContour, position) - offsets[layer]) * width / 2) * 2;
+          const right = Math.round((sample(rightContour, position) + offsets[layer]) * width / 2) * 2;
+          if (x < left || x > right) continue;
+          color = layer;
+          const edge = Math.min(x - left, right - x);
+          const fragment = (Math.floor(x / 2) * 17 + row * 13) % 23;
+          // Only a few edge fragments blend into the neighboring color.
+          if (edge < 3 && fragment < 6) color = layer + 1;
+          break;
+        }
+        context.fillStyle = palette[color];
+        context.fillRect(x, y, 1, 1);
       }
-      const pixelColor = Math.min(24, Math.floor(level * 4 + threshold));
-      context.fillStyle = palette[pixelColor];
-      context.fillRect(x, y, 1, 1);
     }
   }
   new ResizeObserver(paint).observe(section);
