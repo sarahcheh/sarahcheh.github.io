@@ -135,3 +135,5 @@ html{scroll-padding-top:calc(var(--header-height) + 76px)}
  .language-switch{gap:4px}
 }
 @media print{.header{display:none}}
+
+@media(max-width:420px){html[lang=en] .brand [data-copy="brandLabel"],html[lang=en] .header nav a,html[lang=en] .language-switch{font-size:9px}html[lang=en] .header-actions{gap:7px}html[lang=en] .header nav{gap:8px}html[lang=en] .language-switch{gap:3px}}
