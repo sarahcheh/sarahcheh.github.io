@@ -246,7 +246,21 @@ window.PORTFOLIO_LOCALES = {
           }
         ]
       }
-    }
+    },
+    "profileName": "최다은 | Daeun Cheh",
+    "profileBody": "작곡과 공연 제작, 글로벌 게임잼을 경험하며 다양한 분야의 구성원들과 협업해 왔습니다. 서로 다른 관점과 의도를 이해하고 소통하는 능력, 그리고 게임 엔진과 오디오 미들웨어 활용 및 AI를 활용한 코딩 경험을 바탕으로 기술적 문제를 해결하는 능력이 저의 강점입니다.",
+    "dawLabel": "사용 가능한 DAW",
+    "middlewareLabel": "미들웨어",
+    "engineLabel": "게임 엔진",
+    "wwiseNote": "Fundamentals Certification 보유",
+    "educationLabel": "학력 · 교육",
+    "university": "상명대학교 서울캠퍼스",
+    "degree": "뉴미디어작곡전공 학사",
+    "universityDate": "2024년 2월 졸업",
+    "academy": "엠나인아카데미",
+    "training": "(게임콘텐츠제작) 게임 사운드디자인 제작 실무자 양성과정",
+    "trainingDate": "2026년 9월 수료",
+    "emailLabel": "이메일"
   },
   "en": {
     "name": "Daeun Cheh",
@@ -495,6 +509,20 @@ window.PORTFOLIO_LOCALES = {
           }
         ]
       }
-    }
+    },
+    "profileName": "최다은 | Daeun Cheh",
+    "profileBody": "Through music composition, stage production, and international game jams, I have collaborated with people across different disciplines. My strengths are understanding and communicating diverse perspectives and intentions, and solving technical problems through experience with game engines, audio middleware, and AI-assisted coding.",
+    "dawLabel": "DAWs",
+    "middlewareLabel": "Audio middleware",
+    "engineLabel": "Game engines",
+    "wwiseNote": "Fundamentals Certification",
+    "educationLabel": "Education & training",
+    "university": "Sangmyung University, Seoul Campus",
+    "degree": "Bachelor’s degree in New Media Composition",
+    "universityDate": "Graduated February 2024",
+    "academy": "M Nine Academy",
+    "training": "Game Sound Design Production Training (Game Content Production)",
+    "trainingDate": "Completed September 2026",
+    "emailLabel": "Email"
   }
 };

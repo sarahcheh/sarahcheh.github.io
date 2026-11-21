@@ -29,9 +29,7 @@ GitHub Pages는 main 브랜치의 루트에서 배포합니다. 설치나 빌드
 왼쪽 상단 음파 아이콘을 55px 이상 드래그하거나, Alt + Shift + M을 누르면 인증 창이 열립니다.
 입구는 탐색 편의 기능이며, 저장 권한은 GitHub 인증으로 확인합니다.
 
-GitHub에서 이 저장소만 선택한 Fine-grained personal access token을 발급합니다.
-Repository permissions의 Contents를 Read and write로 설정하고 만료일을 지정합니다.
-인증 창에 접근 키를 입력하면 작품 순서와 한국어·영어 소개를 수정할 수 있습니다.
+관리자 인증 후 작품 순서와 한국어·영어 슬로건 및 소개 문장을 수정할 수 있습니다.
 첫 번째 작품이 상단 큰 영상으로 표시됩니다.
 
 변경 내용은 site-settings.json 한 파일에 저장됩니다.
@@ -39,3 +37,5 @@ Repository permissions의 Contents를 Read and write로 설정하고 만료일�
 접근 키는 창을 닫거나 15분이 지나면 지워집니다. 브라우저 저장소나 저장소 파일에 기록하지 않습니다.
 로컬 미리보기에서는 기본 설정을 사용하며, 사이트 저장은 공개 사이트에서 사용하는 것을 권장합니다.
 방문자 집계는 연결하지 않았습니다.
+
+이름, 강점 소개, 사용 도구, 학력·교육과 이메일은 index.html과 locales.js에서 관리합니다.

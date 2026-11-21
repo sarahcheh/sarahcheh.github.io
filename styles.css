@@ -49,9 +49,9 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 .admin-dialog fieldset{border:0;padding:0;margin:0;min-width:0}
 .admin-dialog legend{font-size:17px;font-weight:650}
 .admin-dialog .admin-help{font-size:13px;color:var(--muted);line-height:1.7}
-.admin-guide{margin-top:20px;font-size:14px}
-.admin-guide summary{cursor:pointer}
-.admin-guide a{text-decoration:underline;text-underline-offset:3px}
+
+
+
 .admin-order{list-style:none;padding:0;margin:18px 0 28px}
 .admin-order li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;cursor:grab}
 .admin-order li>span{flex:1;line-height:1.6}
@@ -64,3 +64,21 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 .admin-status{font-size:14px;white-space:pre-line}
 .admin-status.is-error{color:#a32626}
 @media(max-width:600px){.header-actions{gap:17px}.header nav{gap:15px}.language-switch{font-size:12px;gap:6px}.header nav a{font-size:12px}.project-description{font-size:15px}.admin-dialog{padding:20px}.admin-about{grid-template-columns:1fr}.admin-order li{align-items:flex-start}.hero-summary{line-height:1.8}}
+
+.profile{padding-top:36px;padding-bottom:60px}
+.profile>h2{margin:0 0 24px;font-size:clamp(30px,3.5vw,44px);font-weight:650;letter-spacing:-1.2px;line-height:1.3}
+.profile-introduction{max-width:850px;font-size:16px;line-height:1.95;margin:0;color:var(--ink)}
+.profile-tools{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:40px;padding:32px 0;margin:36px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.profile-tools dt{font-size:14px;color:var(--muted);margin-bottom:14px}
+.profile-tools dd{margin:0;font-size:17px;line-height:1.9}
+.certification-note{display:block;margin-top:3px;font-size:13px;color:var(--muted);line-height:1.6}
+.profile-education{padding:32px 0;border-bottom:1px solid var(--line)}
+.profile-education>h3{font-size:14px;font-weight:500;color:var(--muted);margin:0 0 24px}
+.education-item+.education-item{margin-top:24px}
+.education-item h4{font-size:16px;font-weight:600;margin:0 0 6px;line-height:1.6}
+.education-item p{margin:4px 0 0;font-size:15px;line-height:1.7}
+.education-item .education-date{font-size:14px;color:var(--muted);margin-top:6px}
+.profile-email{display:flex;align-items:baseline;gap:28px;margin-top:32px}
+.profile-email>span{font-size:14px;color:var(--muted)}
+.profile-email>a{font-size:20px;border-bottom:1px solid var(--ink);padding-bottom:5px;overflow-wrap:anywhere}
+@media(max-width:600px){.profile{padding-top:18px;padding-bottom:40px}.profile>h2{font-size:28px;letter-spacing:-.7px;margin-bottom:20px}.profile-introduction{font-size:15px;line-height:1.9}.profile-tools{grid-template-columns:1fr;gap:26px;padding:26px 0;margin-top:28px}.profile-tools dt{margin-bottom:8px}.profile-tools dd{font-size:16px}.profile-education{padding:26px 0}.profile-email{align-items:flex-start;flex-direction:column;gap:10px;margin-top:26px}.profile-email>a{font-size:19px}}

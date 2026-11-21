@@ -59,8 +59,8 @@
       if (response.status === 409 || response.status === 422)
         throw new Error('SETTINGS_CONFLICT');
       if (response.status === 401 || response.status === 403)
-        throw new Error('인증 또는 권한을 확인해 주세요. 이 저장소의 Contents 쓰기 권한이 필요합니다.');
-      throw new Error('GitHub 요청을 완료하지 못했습니다. 연결 상태를 확인해 주세요.');
+        throw new Error('인증 정보를 확인해 주세요.');
+      throw new Error('요청을 완료하지 못했습니다. 연결 상태를 확인해 주세요.');
     }
     return response.json();
   }
@@ -139,16 +139,16 @@
     const key = keyInput.value.trim();
     keyInput.value = '';
     if (!/^github_pat_[A-Za-z0-9_]+$/.test(key)) {
-      tell('이 저장소 전용 Fine-grained token을 입력해 주세요.', true);
+      tell('인증 정보를 확인해 주세요.', true);
       return;
     }
     accessKey = key;
     setBusy(true);
-    tell('GitHub 인증을 확인하는 중입니다.');
+    tell('확인 중입니다.');
     try {
       const user = await github('https://api.github.com/user');
       if (user.login.toLowerCase() !== 'sarahcheh')
-        throw new Error('사이트 소유자의 GitHub 계정으로 인증해 주세요.');
+        throw new Error('인증 정보를 확인해 주세요.');
       const remote = await github(fileEndpoint + '?ref=main');
       const settings = JSON.parse(decodeContent(remote.content));
       if (!site.validSettings(settings)) throw new Error('저장된 사이트 설정을 읽지 못했습니다.');
@@ -185,7 +185,7 @@
     try { value = readDraft(); }
     catch (error) { tell(error.message, true); return; }
     setBusy(true);
-    tell('GitHub에 저장하는 중입니다.');
+    tell('저장 중입니다.');
     try {
       const latest = await github(fileEndpoint + '?ref=main');
       if (latest.sha !== expectedSha)

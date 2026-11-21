@@ -1,22 +1,22 @@
 window.PORTFOLIO_DEFAULT_SETTINGS = {
   "version": 1,
   "order": [
-    "dnf-skills",
-    "dnf-monsters",
-    "dnf-ui",
     "silk",
     "elder",
     "reverse",
-    "monsters"
+    "dnf-skills",
+    "dnf-monsters",
+    "monsters",
+    "dnf-ui"
   ],
   "about": {
     "ko": {
-      "heading": "의도를 소리로 구현하는\n게임 사운드 디자이너 최다은입니다.",
-      "body": "레퍼런스로 장면과 행동의 의도를 정리하고,\n피드백을 통해 그 의도가 소리로 전달되는지 확인합니다."
+      "heading": "만드는 이의 의도를 플레이어의 경험으로.",
+      "body": "기획과 연출의 의도를 이해하고, 소리로 표현해 플레이어를 게임의 세계로 초대합니다."
     },
     "en": {
-      "heading": "I’m Daeun Cheh,\na game sound designer who turns intent into sound.",
-      "body": "I use references to understand the intent behind a scene or action,\nthen use feedback to check whether that intent comes through in the sound."
+      "heading": "Turning Creative Vision into Player Experience.",
+      "body": "I interpret the intent behind game design and direction, express it through sound, and invite players into the game world."
     }
   }
 };
