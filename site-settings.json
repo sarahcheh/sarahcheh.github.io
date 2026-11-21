@@ -1,13 +1,13 @@
 {
   "version": 1,
   "order": [
-    "dnf-skills",
-    "dnf-monsters",
-    "dnf-ui",
     "silk",
     "elder",
     "reverse",
-    "monsters"
+    "dnf-skills",
+    "dnf-monsters",
+    "monsters",
+    "dnf-ui"
   ],
   "about": {
     "ko": {
