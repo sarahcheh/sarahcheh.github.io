@@ -105,7 +105,7 @@ html{scroll-padding-top:calc(var(--header-height) + 76px)}
 .brand [data-copy="brandLabel"],html[lang=en] .brand [data-copy="brandLabel"]{max-width:none}
 .sticky-projects{top:var(--header-height)}
 .project-menu{max-height:min(calc(100dvh - var(--header-height) - 72px),480px)}
-.about{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#63518f 0%,var(--slogan-accent) 50%,#64578f 100%)}
+.about{position:relative;isolation:isolate;overflow:hidden;background:var(--slogan-accent)}
 .pixel-background{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;image-rendering:pixelated}
 .about-body>p{color:#fff}
 .skip{z-index:40}

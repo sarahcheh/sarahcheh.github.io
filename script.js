@@ -225,7 +225,7 @@
   });
 })();
 
-// Paint a static, low-resolution pixel landscape directly in the page.
+// Opaque pixel colors form the gradient, with a uniform center behind the text.
 (() => {
   const canvas = document.querySelector('.pixel-background');
   const section = canvas?.parentElement;
@@ -233,19 +233,25 @@
   const context = canvas.getContext('2d');
   if (!context) return;
   function paint() {
-    const width = Math.ceil(section.clientWidth / 8);
-    const height = Math.ceil(section.clientHeight / 8);
+    const width = Math.ceil(section.clientWidth / 4);
+    const height = Math.ceil(section.clientHeight / 4);
     canvas.width = width;
     canvas.height = height;
+    const center = [113, 90, 183];
+    const outside = [66, 51, 108];
+    const palette = Array.from({ length: 7 }, (_, index) => {
+      const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 6));
+      return `rgb(${color.join(',')})`;
+    });
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-      const edge = Math.pow(Math.abs(x / Math.max(width - 1, 1) * 2 - 1), 1.6);
-      const wave = y + x * .24 + Math.sin(x * .12) * 2.8 + Math.sin(x * .037) * 4;
-      const band = ((Math.floor(wave / 3) % 6) + 6) % 6;
-      const grain = ((x * 31 + y * 47 + x * y * 3) % 17) / 17;
-      if (grain < .15 || edge < .13) continue;
-      const opacity = (.08 + grain * .08) * edge;
-      context.fillStyle = band < 2 ? `rgba(226,210,255,${opacity * 1.8})`
-        : band < 4 ? `rgba(38,26,82,${opacity})` : `rgba(172,146,220,${opacity})`;
+      const distance = Math.abs((x + .5) / width * 2 - 1);
+      const progress = Math.max(0, (distance - .48) / .52);
+      // Stable per-pixel dithering blends neighboring solid color steps.
+      let hash = Math.imul(x + 1, 374761393) ^ Math.imul(y + 1, 668265263);
+      hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
+      const threshold = ((hash ^ (hash >>> 16)) >>> 0) / 4294967296;
+      const level = Math.min(6, Math.floor(progress * 6 + threshold));
+      context.fillStyle = palette[level];
       context.fillRect(x, y, 1, 1);
     }
   }
