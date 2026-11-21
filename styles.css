@@ -92,3 +92,25 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 .about{width:100%;margin-top:24px;padding-block:64px;border-top:0;background:var(--accent)}
 @media(min-width:601px){.profile-tools{grid-template-columns:minmax(0,1fr) minmax(280px,1.7fr) minmax(0,1fr);gap:32px}}
 @media(max-width:600px){.about{padding-block:40px}.profile{padding-top:32px}}
+
+/* Keep both navigation levels aligned with the page content. */
+:root{--header-height:96px;--slogan-accent:#6542ef}
+html{scroll-padding-top:calc(var(--header-height) + 76px)}
+.header{position:sticky;top:0;z-index:30;width:100%;margin:0;padding-inline:max(48px,calc((100% - 1120px)/2));background:#fff;height:var(--header-height)}
+.sticky-projects{top:var(--header-height)}
+.project-menu{max-height:min(calc(100dvh - var(--header-height) - 72px),480px)}
+.about{background:var(--slogan-accent)}
+.about-body>p{color:#fff}
+.skip{z-index:40}
+@media(max-width:800px){.header{padding-inline:28px}}
+@media(max-width:600px){
+ :root{--header-height:102px}
+ .header{padding:12px 20px 8px;display:grid;grid-template-columns:1fr auto;row-gap:4px;align-content:center}
+ .header-actions{display:contents}
+ .header .language-switch{grid-column:2;grid-row:1}
+ .header nav{grid-column:1/-1;grid-row:2;gap:24px}
+ .header nav a{padding:6px 0}
+ .brand [data-copy="brandLabel"]{max-width:none;font-size:12px}
+ html[lang=en] .brand [data-copy="brandLabel"]{max-width:135px}
+}
+@media print{.header{display:none}}

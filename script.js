@@ -143,13 +143,14 @@
 
   function updateNavigation() {
     scheduled = false;
-    const visible = grid.getBoundingClientRect().top <= 78;
+    const headerHeight = document.querySelector('.header').getBoundingClientRect().height;
+    const visible = grid.getBoundingClientRect().top <= headerHeight + 20;
     dock.hidden = !visible;
     if (!visible) setMenuOpen(false);
     let active = cards.get(order[0]);
     for (const id of order) {
       const card = cards.get(id);
-      if (card.getBoundingClientRect().top <= 130) active = card;
+      if (card.getBoundingClientRect().top <= headerHeight + 90) active = card;
     }
     const id = active.id.replace('project-', '');
     const project = locales[language].projects[id];

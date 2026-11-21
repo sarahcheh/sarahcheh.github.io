@@ -232,7 +232,10 @@
     if (!start) return;
     const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y);
     start = null;
-    if (distance >= 55) {
+    const label = document.querySelector('.brand [data-copy="brandLabel"]').getBoundingClientRect();
+    const insideTarget = event.clientX >= label.right + 8 && event.clientX <= label.right + 56 &&
+      Math.abs(event.clientY - (label.top + label.height / 2)) <= 20;
+    if (distance >= 55 && insideTarget) {
       event.preventDefault();
       openAdmin();
     }
@@ -241,11 +244,5 @@
   mark.addEventListener('click', event => {
     event.preventDefault();
     event.stopPropagation();
-  });
-  document.addEventListener('keydown', event => {
-    if (event.altKey && event.shiftKey && event.code === 'KeyM') {
-      event.preventDefault();
-      openAdmin();
-    }
   });
 })();
