@@ -237,15 +237,17 @@
     const height = Math.ceil(section.clientHeight / 4);
     canvas.width = width;
     canvas.height = height;
-    const center = [113, 90, 183];
+    const center = [121, 99, 190];
     const outside = [66, 51, 108];
     const palette = Array.from({ length: 7 }, (_, index) => {
       const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 6));
       return `rgb(${color.join(',')})`;
     });
+    const innerRadius = Math.min(width * .1, height * .2);
+    const outerRadius = Math.max(width * .5, height * .8);
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-      const distance = Math.abs((x + .5) / width * 2 - 1);
-      const progress = Math.max(0, (distance - .48) / .52);
+      const distance = Math.hypot(x + .5 - width / 2, y + .5 - height / 2);
+      const progress = Math.min(1, Math.max(0, (distance - innerRadius) / (outerRadius - innerRadius)));
       // Stable per-pixel dithering blends neighboring solid color steps.
       let hash = Math.imul(x + 1, 374761393) ^ Math.imul(y + 1, 668265263);
       hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
