@@ -82,3 +82,6 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 .profile-email>span{font-size:14px;color:var(--muted)}
 .profile-email>a{font-size:20px;border-bottom:1px solid var(--ink);padding-bottom:5px;overflow-wrap:anywhere}
 @media(max-width:600px){.profile{padding-top:18px;padding-bottom:40px}.profile>h2{font-size:28px;letter-spacing:-.7px;margin-bottom:20px}.profile-introduction{font-size:15px;line-height:1.9}.profile-tools{grid-template-columns:1fr;gap:26px;padding:26px 0;margin-top:28px}.profile-tools dt{margin-bottom:8px}.profile-tools dd{font-size:16px}.profile-education{padding:26px 0}.profile-email{align-items:flex-start;flex-direction:column;gap:10px;margin-top:26px}.profile-email>a{font-size:19px}}
+
+.brand [data-copy="brandLabel"]{line-height:1.4}
+@media(max-width:600px){.header-actions{gap:12px}.brand [data-copy="brandLabel"]{max-width:116px}}

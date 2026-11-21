@@ -260,7 +260,8 @@ window.PORTFOLIO_LOCALES = {
     "academy": "엠나인아카데미",
     "training": "(게임콘텐츠제작) 게임 사운드디자인 제작 실무자 양성과정",
     "trainingDate": "2026년 9월 수료",
-    "emailLabel": "이메일"
+    "emailLabel": "이메일",
+    "brandLabel": "최다은의 포트폴리오"
   },
   "en": {
     "name": "Daeun Cheh",
@@ -523,6 +524,7 @@ window.PORTFOLIO_LOCALES = {
     "academy": "M Nine Academy",
     "training": "Game Sound Design Production Training (Game Content Production)",
     "trainingDate": "Completed September 2026",
-    "emailLabel": "Email"
+    "emailLabel": "Email",
+    "brandLabel": "Daeun Cheh’s Portfolio"
   }
 };
