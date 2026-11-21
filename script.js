@@ -1,108 +1,225 @@
 (() => {
   'use strict';
   const config = window.PORTFOLIO || {};
-  const name = String(config.name || '이름');
-  document.querySelectorAll('[data-name]').forEach(el => { el.textContent = name; });
-  document.title = `${name} — 게임 사운드 디자이너`;
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const safeUrl = value => {
-    try { const u = new URL(value); return ['https:', 'http:'].includes(u.protocol) ? u : null; }
-    catch { return null; }
-  };
-  function mountVideo(slot, raw) {
-    const url = safeUrl(raw);
-    if (!url) return;
-    const title = slot.dataset.title;
-    let embed = null;
-    const host = url.hostname.toLowerCase().replace(/^www\./, '');
-    if (['youtube.com', 'm.youtube.com', 'youtu.be'].includes(host)) {
-      const id = host === 'youtu.be' ? url.pathname.slice(1).split('/')[0] : url.searchParams.get('v') || url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1];
-      if (/^[\w-]{11}$/.test(id || '')) embed = `https://www.youtube-nocookie.com/embed/${id}`;
-    } else if (['vimeo.com', 'player.vimeo.com'].includes(host)) {
-      const match = url.pathname.match(/\/(?:video\/)?(\d+)(?:\/([\w]+))?/);
-      if (match) {
-        const hash = url.searchParams.get('h') || match[2];
-        embed = `https://player.vimeo.com/video/${match[1]}${hash ? `?h=${encodeURIComponent(hash)}` : ''}`;
-      }
-    }
-    let player;
-    if (embed) {
-      player = document.createElement('iframe');
-      player.src = embed;
-      player.title = `${title} 영상`;
-      player.allow = 'fullscreen; picture-in-picture; encrypted-media';
-      player.allowFullscreen = true;
-      player.loading = 'lazy';
-      player.referrerPolicy = 'strict-origin-when-cross-origin';
-    } else if (/\.(mp4|webm)$/i.test(url.pathname)) {
-      player = document.createElement('video');
-      player.src = url.href;
-      player.controls = true;
-      player.preload = 'metadata';
-      player.playsInline = true;
-      player.setAttribute('aria-label', `${title} 영상`);
-    } else {
-      // Keep the inline placeholder for unsupported links; never open a new window.
-      return;
-    }
-    player.className = 'video-player';
-    slot.replaceChildren(player);
-  }
-  document.querySelectorAll('.inline-media[data-project]').forEach(slot => {
-    const id = slot.dataset.project;
-    mountVideo(slot, config.projects?.[id]?.videoUrl);
-  });
-  const projectGrid = document.querySelector('.project-grid');
+  const locales = window.PORTFOLIO_LOCALES;
+  const defaults = window.PORTFOLIO_DEFAULT_SETTINGS;
+  const ids = Object.keys(config.projects);
+  const cards = new Map(ids.map(id => [id, document.getElementById('project-' + id)]));
+  const grid = document.querySelector('.project-grid');
+  const featured = document.querySelector('.featured');
   const dock = document.getElementById('sticky-projects');
   const toggle = document.getElementById('project-menu-toggle');
   const menu = document.getElementById('project-menu');
-  const current = document.getElementById('project-menu-current');
-  const action = document.getElementById('project-menu-action');
-  const projects = [...document.querySelectorAll('article.project[id]')];
+  let settings = structuredClone(defaults);
+  let language = 'ko';
+  let order = [];
+  let scheduled = false;
+
+  function validSettings(value) {
+    if (!value || value.version !== 1 || !Array.isArray(value.order)) return false;
+    if (value.order.length !== ids.length || new Set(value.order).size !== ids.length ||
+        !value.order.every(id => ids.includes(id))) return false;
+    return ['ko', 'en'].every(lang => {
+      const about = value.about?.[lang];
+      return about && ['heading', 'body'].every(key =>
+        typeof about[key] === 'string' && about[key].trim().length > 0 &&
+        about[key].length <= 1000);
+    });
+  }
+
+  function applyOrder() {
+    if (order.join() === settings.order.join()) return;
+    order = [...settings.order];
+    order.forEach((id, index) => {
+      const card = cards.get(id);
+      card.classList.toggle('featured-project', index === 0);
+      const oldHeading = card.querySelector('.project-title');
+      const tag = index === 0 ? 'H2' : 'H3';
+      if (oldHeading.tagName !== tag) {
+        const heading = document.createElement(tag);
+        heading.className = oldHeading.className;
+        heading.id = oldHeading.id;
+        heading.textContent = oldHeading.textContent;
+        oldHeading.replaceWith(heading);
+      }
+      card.querySelector('.project-index').textContent = String(index + 1).padStart(2, '0');
+      if (index === 0) featured.append(card);
+      else grid.append(card);
+    });
+    featured.setAttribute('aria-labelledby', 'project-' + order[0] + '-title');
+  }
+
   function setMenuOpen(open) {
+    const copy = locales[language];
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? '작품 목록 접기' : '작품 목록 펼치기');
-    action.textContent = open ? '접기' : '펼치기';
+    toggle.setAttribute('aria-label', open ? copy.menuClose : copy.menuOpen);
+    document.getElementById('project-menu-action').textContent = open ? copy.collapse : copy.expand;
     menu.hidden = !open;
   }
-  projects.forEach(project => {
-    const item = document.createElement('li');
-    const link = document.createElement('a');
-    link.href = `#${project.id}`;
-    const index = document.createElement('span'); index.className = 'toc-index'; index.textContent = project.querySelector('.project-index').textContent;
-    const text = document.createElement('span'); text.textContent = project.querySelector('.project-title').textContent;
-    const scope = document.createElement('small'); scope.textContent = project.querySelector(':scope > p:not(.eyebrow)').textContent;
-    text.append(scope); link.append(index, text); item.append(link); menu.querySelector('ol').append(item);
-    link.addEventListener('click', () => { setMenuOpen(false); project.focus({preventScroll:true}); });
+
+  function render() {
+    const copy = locales[language];
+    applyOrder();
+    document.documentElement.lang = language;
+    document.title = copy.name + ' — ' + copy.role;
+    document.querySelectorAll('[data-name]').forEach(el => { el.textContent = copy.name; });
+    document.querySelectorAll('[data-copy]').forEach(el => {
+      el.textContent = copy[el.dataset.copy];
+    });
+    document.querySelector('.brand').setAttribute('aria-label', copy.home);
+    document.querySelector('.header nav').setAttribute('aria-label', copy.nav);
+    dock.setAttribute('aria-label', copy.projectList);
+    menu.setAttribute('aria-label', copy.projectList);
+    document.querySelectorAll('[data-language]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.language === language));
+    });
+    const ol = menu.querySelector('ol');
+    ol.replaceChildren();
+    order.forEach(id => {
+      const card = cards.get(id);
+      const project = copy.projects[id];
+      card.querySelector('.project-title').textContent = project.title;
+      card.querySelector(':scope > p').textContent = project.scope;
+      const summary = card.querySelector('summary');
+      summary.firstChild.textContent = copy.details;
+      const description = card.querySelector('.project-description');
+      description.replaceChildren();
+      for (const section of project.sections) {
+        if (section.title) {
+          const heading = document.createElement('h4');
+          heading.textContent = section.title;
+          description.append(heading);
+        }
+        for (const paragraph of section.paragraphs) {
+          const element = document.createElement('p');
+          element.textContent = paragraph;
+          description.append(element);
+        }
+      }
+      const media = card.querySelector('.inline-media');
+      media.dataset.title = project.title + ' · ' + project.scope;
+      const player = media.querySelector('iframe, video');
+      if (player) player.setAttribute('title', media.dataset.title + ' ' + copy.video);
+      const placeholder = media.querySelector('.media-placeholder > span');
+      if (placeholder) placeholder.textContent = copy.loading;
+      const image = media.querySelector('img');
+      if (image) image.alt = '';
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = '#' + card.id;
+      const index = document.createElement('span');
+      index.className = 'toc-index';
+      index.textContent = card.querySelector('.project-index').textContent;
+      const text = document.createElement('span');
+      text.textContent = project.title;
+      const small = document.createElement('small');
+      small.textContent = project.scope;
+      text.append(small);
+      link.append(index, text);
+      item.append(link);
+      ol.append(item);
+      link.addEventListener('click', () => {
+        setMenuOpen(false);
+        card.focus({ preventScroll: true });
+      });
+    });
+    document.getElementById('about-title').textContent = settings.about[language].heading;
+    document.querySelector('.about-body > p').textContent = settings.about[language].body;
+    document.querySelector('meta[name="description"]').content =
+      copy.hero + '. ' + copy.heroSummary;
+    setMenuOpen(!menu.hidden);
+    scheduleNavigation();
+  }
+
+  function setLanguage(lang) {
+    if (!locales[lang]) return;
+    language = lang;
+    try { localStorage.setItem('portfolio-language', lang); } catch {}
+    const url = new URL(location.href);
+    url.searchParams.set('lang', lang);
+    history.replaceState(null, '', url);
+    render();
+  }
+
+  function updateNavigation() {
+    scheduled = false;
+    const visible = grid.getBoundingClientRect().top <= 78;
+    dock.hidden = !visible;
+    if (!visible) setMenuOpen(false);
+    let active = cards.get(order[0]);
+    for (const id of order) {
+      const card = cards.get(id);
+      if (card.getBoundingClientRect().top <= 130) active = card;
+    }
+    const id = active.id.replace('project-', '');
+    const project = locales[language].projects[id];
+    document.getElementById('project-menu-current').textContent =
+      project.title + ' · ' + project.scope;
+    menu.querySelectorAll('a').forEach(link => {
+      if (link.hash === '#' + active.id) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  function scheduleNavigation() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(updateNavigation);
+  }
+
+  for (const [id, card] of cards) {
+    const raw = config.projects[id].videoUrl;
+    const match = raw.match(/^https:\/\/youtu\.be\/([\w-]{11})$/);
+    if (!match) continue;
+    const player = document.createElement('iframe');
+    player.src = 'https://www.youtube-nocookie.com/embed/' + match[1];
+    player.className = 'video-player';
+    player.allow = 'fullscreen; picture-in-picture; encrypted-media';
+    player.allowFullscreen = true;
+    player.loading = 'lazy';
+    player.referrerPolicy = 'strict-origin-when-cross-origin';
+    card.querySelector('.inline-media').replaceChildren(player);
+  }
+  const requestedLanguage = new URL(location.href).searchParams.get('lang');
+  if (locales[requestedLanguage]) language = requestedLanguage;
+  else {
+    try { if (locales[localStorage.getItem('portfolio-language')])
+      language = localStorage.getItem('portfolio-language'); } catch {}
+  }
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.querySelectorAll('[data-language]').forEach(button => {
+    button.addEventListener('click', () => setLanguage(button.dataset.language));
   });
   toggle.addEventListener('click', () => setMenuOpen(menu.hidden));
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !menu.hidden) { setMenuOpen(false); toggle.focus({preventScroll:true}); }
+    if (event.key === 'Escape' && !menu.hidden) {
+      setMenuOpen(false);
+      toggle.focus({ preventScroll: true });
+    }
   });
   document.addEventListener('click', event => {
     if (!menu.hidden && !dock.contains(event.target)) setMenuOpen(false);
   });
-  let scheduled = false;
-  function updateNavigation() {
-    scheduled = false;
-    const visible = projectGrid.getBoundingClientRect().top <= 78;
-    dock.hidden = !visible;
-    if (!visible) setMenuOpen(false);
-    let active = projects[0];
-    for (const project of projects) {
-      if (project.getBoundingClientRect().top <= 130) active = project;
-    }
-    current.textContent = `${active.querySelector('.project-title').textContent} · ${active.querySelector(':scope > p:not(.eyebrow)').textContent}`;
-    menu.querySelectorAll('a').forEach(link => {
-      if (link.hash === `#${active.id}`) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    });
-  }
-  function scheduleNavigation() {
-    if (!scheduled) { scheduled = true; requestAnimationFrame(updateNavigation); }
-  }
-  window.addEventListener('scroll', scheduleNavigation, {passive:true});
+  window.addEventListener('scroll', scheduleNavigation, { passive: true });
   window.addEventListener('resize', scheduleNavigation);
   window.addEventListener('pageshow', scheduleNavigation);
-  updateNavigation();
+  render();
+  const ready = (async () => {
+    if (!['https:', 'http:'].includes(location.protocol)) return;
+    try {
+      const response = await fetch('site-settings.json', { cache: 'no-store' });
+      const remote = await response.json();
+      if (validSettings(remote)) { settings = remote; render(); }
+    } catch { /* Embedded defaults keep the page usable offline. */ }
+  })();
+  window.portfolioSite = Object.freeze({
+    ready, validSettings,
+    getSettings: () => structuredClone(settings),
+    getProject: id => locales.ko.projects[id],
+    preview(value) {
+      if (!validSettings(value)) throw new Error('Invalid portfolio settings');
+      settings = structuredClone(value);
+      render();
+    }
+  });
 })();
