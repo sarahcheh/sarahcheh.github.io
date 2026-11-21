@@ -67,7 +67,7 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 
 .profile{padding-top:52px;padding-bottom:60px}
 .profile>h2{margin:0 0 24px;font-size:clamp(26px,3vw,36px);font-weight:650;letter-spacing:-.8px;line-height:1.3;text-align:center}
-.profile-introduction{max-width:850px;font-size:16px;line-height:1.95;margin:0;color:var(--ink)}
+.profile-introduction{width:100%;font-size:16px;line-height:1.95;margin:0;color:var(--ink)}
 .profile-tools{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:40px;padding:32px 0;margin:36px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .profile-tools dt{font-size:14px;color:var(--muted);margin-bottom:14px}
 .profile-tools dd{margin:0;font-size:17px;line-height:1.9}
