@@ -243,16 +243,26 @@
       const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 6));
       return `rgb(${color.join(',')})`;
     });
-    const innerRadius = Math.min(width * .14, height * .35);
-    const outerRadius = Math.max(width * .38, height * .7);
+    const previousInner = Math.min(width * .14, height * .35);
+    const previousOuter = Math.max(width * .38, height * .7);
+    const span = previousOuter - previousInner;
+    // Extend color 1 through the former color 2 band, then skip color 2.
+    const innerRadius = previousInner + span / 6;
+    const bandWidth = span * .2;
+    const boundaries = [innerRadius];
+    for (const multiplier of [1, 1.25, 1.5, 1.75]) {
+      boundaries.push(boundaries[boundaries.length - 1] + bandWidth * multiplier);
+    }
+    const colorSteps = [0, 2, 3, 4, 5, 6];
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
       const distance = Math.hypot(x + .5 - width / 2, y + .5 - height / 2);
-      const progress = Math.min(1, Math.max(0, (distance - innerRadius) / (outerRadius - innerRadius)));
-      // Stable per-pixel dithering blends neighboring solid color steps.
+      // A narrow dither at each boundary keeps the pixel edge visible.
       let hash = Math.imul(x + 1, 374761393) ^ Math.imul(y + 1, 668265263);
       hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
       const threshold = ((hash ^ (hash >>> 16)) >>> 0) / 4294967296;
-      const level = Math.min(6, Math.floor(progress * 6 + threshold));
+      const ditheredDistance = distance - threshold * 2;
+      const band = boundaries.findIndex(radius => ditheredDistance < radius);
+      const level = colorSteps[band < 0 ? colorSteps.length - 1 : band];
       context.fillStyle = palette[level];
       context.fillRect(x, y, 1, 1);
     }
