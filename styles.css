@@ -85,3 +85,6 @@ html[lang=en] .about-body .about-lead{letter-spacing:-.4px}
 
 .brand [data-copy="brandLabel"]{line-height:1.4}
 @media(max-width:600px){.header-actions{gap:12px}.brand [data-copy="brandLabel"]{max-width:116px}}
+.about-body .about-lead{font-size:clamp(30px,3.5vw,44px);font-weight:650;line-height:1.3;letter-spacing:-1.2px;text-align:center;color:var(--accent)}
+.about-body>p{text-align:center;margin-top:20px}
+@media(max-width:600px){.about-body .about-lead{font-size:28px;line-height:1.45;letter-spacing:-.7px}}
