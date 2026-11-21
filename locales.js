@@ -261,7 +261,13 @@ window.PORTFOLIO_LOCALES = {
     "training": "(게임콘텐츠제작) 게임 사운드디자인 제작 실무자 양성과정",
     "trainingDate": "2026년 9월 수료",
     "emailLabel": "이메일",
-    "brandLabel": "최다은의 포트폴리오"
+    "brandLabel": "최다은의 포트폴리오",
+    "participationLabel": "프로젝트 · 참여 이력",
+    "cassetteProject": "음악극 <카세트 플레이어> 총감독",
+    "cellProject": "연극 <THE CELL [대학로]> 조연출",
+    "jamProject": "GMTK Game Jam 2026 | 사운드 디자이너",
+    "collaborationNote": "인디게임 프로젝트 및 게임잼 협업 제안을 환영합니다!",
+    "discordLabel": "디스코드"
   },
   "en": {
     "name": "Daeun Cheh",
@@ -525,6 +531,12 @@ window.PORTFOLIO_LOCALES = {
     "training": "(Game Contents Production) Game Sound Design Production Specialist Training Program",
     "trainingDate": "Completed September 2026",
     "emailLabel": "Email",
-    "brandLabel": "Daeun Cheh’s Portfolio"
+    "brandLabel": "Daeun Cheh’s Portfolio",
+    "participationLabel": "Projects & participation",
+    "cassetteProject": "Music theatre <Cassette Player> | General Director",
+    "cellProject": "Theatre <THE CELL [Daehangno]> | Assistant Director",
+    "jamProject": "GMTK Game Jam 2026 | Sound Designer",
+    "collaborationNote": "I welcome collaboration opportunities for indie games and game jams!",
+    "discordLabel": "Discord"
   }
 };
