@@ -262,15 +262,18 @@ window.PORTFOLIO_LOCALES = {
     "trainingDate": "2026년 9월 수료",
     "emailLabel": "이메일",
     "brandLabel": "최다은의 포트폴리오",
-    "participationLabel": "프로젝트 · 참여 이력",
-    "cassetteProject": "음악극 <카세트 플레이어> 총감독",
-    "cellProject": "연극 <THE CELL [대학로]> 조연출",
-    "jamProject": "GMTK Game Jam 2026 | 사운드 디자이너",
+    "participationLabel": "프로젝트 이력",
+    "cassetteProject": "음악극 <카세트 플레이어>",
+    "cellProject": "연극 <THE CELL [대학로]>",
+    "jamProject": "GMTK Game Jam 2026",
     "collaborationNote": "인디게임 프로젝트 및 게임잼 협업 제안을 환영합니다!",
-    "discordLabel": "디스코드"
+    "discordLabel": "디스코드",
+    "cassetteRole": "역할: 총감독",
+    "cellRole": "역할: 조연출",
+    "jamRole": "역할: 사운드 디자이너"
   },
   "en": {
-    "name": "Daeun Cheh",
+    "name": "Sarah Cheh",
     "role": "Game Sound Designer",
     "skip": "Skip to content",
     "home": "Back to top",
@@ -517,7 +520,7 @@ window.PORTFOLIO_LOCALES = {
         ]
       }
     },
-    "profileName": "최다은 | Daeun Cheh",
+    "profileName": "최다은 | Sarah Cheh",
     "profileBody": "Through music composition, stage production, and international game jams, I have collaborated with people across different disciplines. My strengths are understanding and communicating diverse perspectives and intentions, and solving technical problems through experience with game engines, audio middleware, and AI-assisted coding.",
     "dawLabel": "DAWs",
     "middlewareLabel": "Audio middleware",
@@ -531,12 +534,15 @@ window.PORTFOLIO_LOCALES = {
     "training": "(Game Contents Production) Game Sound Design Production Specialist Training Program",
     "trainingDate": "Completed September 2026",
     "emailLabel": "Email",
-    "brandLabel": "Daeun Cheh’s Portfolio",
-    "participationLabel": "Projects & participation",
-    "cassetteProject": "Music theatre <Cassette Player> | General Director",
-    "cellProject": "Theatre <THE CELL [Daehangno]> | Assistant Director",
-    "jamProject": "GMTK Game Jam 2026 | Sound Designer",
+    "brandLabel": "Sarah Cheh’s Portfolio",
+    "participationLabel": "Project history",
+    "cassetteProject": "Music theatre <Cassette Player>",
+    "cellProject": "Theatre <THE CELL [Daehangno]>",
+    "jamProject": "GMTK Game Jam 2026",
     "collaborationNote": "I welcome collaboration opportunities for indie games and game jams!",
-    "discordLabel": "Discord"
+    "discordLabel": "Discord",
+    "cassetteRole": "Role: General Director",
+    "cellRole": "Role: Assistant Director",
+    "jamRole": "Role: Sound Designer"
   }
 };

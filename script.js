@@ -224,3 +224,31 @@
     }
   });
 })();
+
+// Paint a static, low-resolution pixel landscape directly in the page.
+(() => {
+  const canvas = document.querySelector('.pixel-background');
+  const section = canvas?.parentElement;
+  if (!canvas || !section) return;
+  const context = canvas.getContext('2d');
+  if (!context) return;
+  function paint() {
+    const width = Math.ceil(section.clientWidth / 8);
+    const height = Math.ceil(section.clientHeight / 8);
+    canvas.width = width;
+    canvas.height = height;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const edge = Math.pow(Math.abs(x / Math.max(width - 1, 1) * 2 - 1), 1.6);
+      const wave = y + x * .24 + Math.sin(x * .12) * 2.8 + Math.sin(x * .037) * 4;
+      const band = ((Math.floor(wave / 3) % 6) + 6) % 6;
+      const grain = ((x * 31 + y * 47 + x * y * 3) % 17) / 17;
+      if (grain < .15 || edge < .13) continue;
+      const opacity = (.08 + grain * .08) * edge;
+      context.fillStyle = band < 2 ? `rgba(226,210,255,${opacity * 1.8})`
+        : band < 4 ? `rgba(38,26,82,${opacity})` : `rgba(172,146,220,${opacity})`;
+      context.fillRect(x, y, 1, 1);
+    }
+  }
+  new ResizeObserver(paint).observe(section);
+  paint();
+})();
