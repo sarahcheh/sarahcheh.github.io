@@ -238,13 +238,13 @@
     canvas.width = width;
     canvas.height = height;
     const center = [121, 99, 190];
-    const outside = [66, 51, 108];
+    const outside = [44, 34, 76];
     const palette = Array.from({ length: 7 }, (_, index) => {
       const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 6));
       return `rgb(${color.join(',')})`;
     });
-    const innerRadius = Math.min(width * .1, height * .2);
-    const outerRadius = Math.max(width * .5, height * .8);
+    const innerRadius = Math.min(width * .14, height * .35);
+    const outerRadius = Math.max(width * .38, height * .7);
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
       const distance = Math.hypot(x + .5 - width / 2, y + .5 - height / 2);
       const progress = Math.min(1, Math.max(0, (distance - innerRadius) / (outerRadius - innerRadius)));
