@@ -239,8 +239,8 @@
     canvas.height = height;
     const center = [121, 99, 190];
     const outside = [44, 34, 76];
-    const palette = Array.from({ length: 7 }, (_, index) => {
-      const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 6));
+    const palette = Array.from({ length: 25 }, (_, index) => {
+      const color = center.map((channel, i) => Math.round(channel + (outside[i] - channel) * index / 24));
       return `rgb(${color.join(',')})`;
     });
     const previousInner = Math.min(width * .14, height * .35);
@@ -256,14 +256,23 @@
     const colorSteps = [0, 2, 3, 4, 5, 6];
     for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
       const distance = Math.hypot(x + .5 - width / 2, y + .5 - height / 2);
-      // A narrow dither at each boundary keeps the pixel edge visible.
+      // Blend around unchanged band boundaries using solid intermediate pixel colors.
       let hash = Math.imul(x + 1, 374761393) ^ Math.imul(y + 1, 668265263);
       hash = Math.imul(hash ^ (hash >>> 13), 1274126177);
       const threshold = ((hash ^ (hash >>> 16)) >>> 0) / 4294967296;
-      const ditheredDistance = distance - threshold * 2;
-      const band = boundaries.findIndex(radius => ditheredDistance < radius);
-      const level = colorSteps[band < 0 ? colorSteps.length - 1 : band];
-      context.fillStyle = palette[level];
+      const halfBlend = bandWidth * .4;
+      const band = boundaries.findIndex(radius => distance < radius);
+      let level = colorSteps[band < 0 ? colorSteps.length - 1 : band];
+      for (let i = 0; i < boundaries.length; i++) {
+        const offset = distance - boundaries[i];
+        if (Math.abs(offset) > halfBlend) continue;
+        const t = (offset + halfBlend) / (halfBlend * 2);
+        const blend = t * t * (3 - 2 * t);
+        level = colorSteps[i] + (colorSteps[i + 1] - colorSteps[i]) * blend;
+        break;
+      }
+      const pixelColor = Math.min(24, Math.floor(level * 4 + threshold));
+      context.fillStyle = palette[pixelColor];
       context.fillRect(x, y, 1, 1);
     }
   }
